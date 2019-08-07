@@ -26,6 +26,28 @@ class Create_quizController extends Controller
 
 
 	/**
+	 *
+	 */
+	public function index()
+	{
+
+		try
+		{
+			$ownerEmail = Auth::user()->email;
+			$quizzes = DB::table('quizzes')->select(
+				DB::raw('md5(id) as id, quizName, quiz_duration, access, description, date(created_at) as created_at')
+			)->where('ownerEmail', $ownerEmail)->get();
+		}
+		catch(\Illuminate\Database\QueryException $ex){ 
+			// return back()->withInput()->withErrors(['err'=> $ex->getMessage()]);
+			return redirect('/home')->with('error', $ex->getMessage());
+		}
+
+		return view('show_my_quizzes', ['quizzes'=> $quizzes]);
+	}
+
+
+	/**
 	*	show the create quiz form
 	*/
 	public function create(){
@@ -66,7 +88,7 @@ class Create_quizController extends Controller
 			return back()->withInput()->withErrors(['err'=> $ex->getMessage()]);
 		}
 
-		return redirect('/home')->with('success','Quiz deleted');
+		return redirect('/home')->with('success','Quiz Deleted');
 	}
 
 
@@ -125,21 +147,94 @@ class Create_quizController extends Controller
 	 *	@param id of quiz
 	 *	@return \Illuminate\Http\Response
 	 */
-	public function show($id){
+	public function edit($id){
 
 		try{
 
 			$ownerEmail = Auth::user()->email;
 			$quiz = DB::table('quizzes')->select(
 				DB::raw('md5(id) as id, quizName, quiz_duration, access, description, date(created_at) as created_at')
-			)->where(DB:raw('md5(id)'), $id)->where('ownerEmail', $ownerEmail)->get();
+			)->where(DB::raw('md5(id)'), $id)->where('ownerEmail', $ownerEmail)->get();
 
+			$quiz_id = $quiz[0]->id;
+			$questions = DB::table('questions')->select(DB::raw('md5(id) as id, question, type, correct_answer, options'))
+																				 ->where(DB::raw('md5(target_quiz)'), $quiz_id)->get();
+			// dd($questions);
 		}
 		catch(\Illuminate\Database\QueryException $ex){ 
 			return back()->withInput()->withErrors(['err'=> $ex->getMessage()]);
 		}
 
-		return view('view_modify_quiz', quiz);
+		return view('view_modify_quiz', ['head'=>$quiz,'questions'=>$questions]);
 	}
+
+
+	/**
+	 * modify an existed quiz
+	 *	@return \Illuminate\Http\Response
+	 */
+	public function update(Request $request)
+	{
+
+		try
+		{
+			// check if user own this quiz
+			$userEmail = Auth::user()->email;
+			$quiz = DB::table('quizzes')->select('ownerEmail')
+															 		->where(DB::raw("md5(id)"), $request->input('quiz_id'))->get();
+			if(count($quiz) != 1){
+				return redirect('/home')->with('error','Unexpected Error');
+			}
+
+			if($quiz[0]->ownerEmail != $userEmail)
+			{
+				return redirect('/home')->with('error','You are not the owner of the quiz');
+			}
+
+			
+			// update description of quiz
+			DB::table('quizzes')->where(DB::raw('md5(id)'), $request->input('quiz_id'))
+											 ->update([
+												 'quizName' => $request->input('quizName'),
+												 'description' => $request->input('description'),
+												 'quiz_duration'=> $request->input('quiz_duration')
+											 ]);
+
+
+			// update questions of quiz
+			foreach($request->input('questions') as $id=> $question)
+			{
+				// dd($question['question']);
+				$ans = $option = NULL;
+				if(!array_key_exists('question', $question))
+				{
+					// error
+				}
+				if(array_key_exists('ans', $question))
+				{
+					$ans = $question['ans'];
+				}
+				if(array_key_exists('option', $question))
+				{
+					$option = json_encode($question['option']);
+				}
+
+				DB::table('questions')->where(DB::raw('md5(id)'),$id)
+											 ->update([
+												 'question' => $question['question'],
+												 'correct_answer' => $ans,
+												 'options'=> $option
+											 ]);
+			}
+
+		}
+		catch(\Illuminate\Database\QueryException $ex)
+		{ 
+			return back()->withInput()->withErrors(['err'=> $ex->getMessage()]);
+		}
+
+		return redirect('/home')->with('success','Quiz Updated');
+	}
+
 
 }

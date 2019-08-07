@@ -28,9 +28,21 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+
+Route::get('/my_quizzes', 'Create_quizController@index')->name('my_quizzes');
+
 Route::get('/create_quiz', 'Create_quizController@create')->name('create_quiz');
 Route::post('/store','Create_quizController@store')->name('store');
-Route::get('/solve_quiz/{id}', 'Create_quizController@show')->name('solve_quiz');
+
+Route::get('/show_edit_quiz/{id}', 'Create_quizController@edit')->name('show_edit_quiz');
+Route::post('/update_quiz','Create_quizController@update')->name('update_quiz');
+
 Route::get('/delete_quiz/{id}', 'Create_quizController@delete')->name('delete_quiz');
 
 
+Route::get('/browse_quizzes', 'Solve_quizController@index')->name('browse_quizzes');
+
+Route::get('/solve_quiz/{id}', 'Solve_quizController@show')->name('solve_quiz');
+Route::post('/calculate_result', 'Solve_quizController@store')->name('calculate_result');
+
+// Route::get('/show_results', 'Solve_quizController@result')->name('show_results');

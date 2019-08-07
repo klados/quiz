@@ -11,7 +11,7 @@
 
 					<div class='form-group'>
 						{{ Form::label('quizName','Name of the quiz') }}
-						{{ Form::text('quizName','',['class'=>'form-control']) }}
+						{{ Form::text('quizName','',['class'=>'form-control', 'required' => '']) }}
 					</div>
 
 					<div class='form-group'>
@@ -26,10 +26,11 @@
 						{{ Form::text('quiz_duration','',['class'=>'form-control', 'type'=>'number', 'placeholder'=>'Optional, in how many minutes the user must complete the quiz' ]) }}
 					</div>
 
-					{{ Form::submit('Submit', ['class'=>'btn btn-success']) }} 
+  				<div class="row justify-content-center">
+						{{ Form::submit('Submit', ['class'=>'btn btn-success']) }} 
+					</div>
 					{{ Form::close() }}
 			</div>	
 		
-			<!-- <question></question> -->
 </div>
 @endsection

@@ -24,5 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@tinymce/tinymce-vue": "^2.1.0",
+        "summernote": "^0.8.12"
     }
 }

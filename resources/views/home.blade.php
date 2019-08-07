@@ -3,50 +3,59 @@
 @section('content')
 <div class="container">
 
-	<div class='row '>
-		@if( count($quizzes) == 0)
-			<div class='alert alert-danger '>Nothing here, create a new Quiz <a href="{{url('create_quiz')}}" class='btn btn-info ml-5'>Create Quiz</a></div>
-		@endif
+	<div class='row justify-content-center mb-2'>
+		<h3>Manage your Life</h3>
 	</div>
 
+	<div class='row mb-5'>
 
-	<div class="row ">
-
-		@foreach($quizzes as $row)
-		<div class="col-lg-4 col-lg-4 mb-3">
-			<div class="card">
-				<div class="card-body">
-					<h5 class="card-title">{{ $row->quizName }}</h5>
-					<div class="card-text">
-						<p>{{ $row->description }}</p>
-						<ul class="list-group">
-							<li class="list-group-item">
-								Max duration of quiz:
-								@if($row->quiz_duration == NULL)
-									<strong>Unlimited time</strong>
-								@else
-									<strong>{{ $row->quiz_duration }} min</strong>
-								@endif
-							</li>
-							<li class="list-group-item">
-								Access mode: {{$row->access}}
-							</li>
-							<li class="list-group-item">
-								Created on: {{$row->created_at}}
-							</li>
-						</ul>
-					</div>
-
-					<div class="col flex text-center mt-4">
-						<a href="{{ url('/solve_quiz/'.$row->id) }}" class='flex-item card-link mr-3'>View</a>
-						<delete_confirm  quiz_id="{{$row->id}}"></delete_confirm>
-					</div>
-
-				</div>
-			</div>
+		<div class='col-lg-6'>
+		<div class="card">
+		  <div class="card-body">
+				<h5 class="card-title text-center">Create a Quiz</h5>
+				<p class="card-text">Create a quiz and share it with the world.</p>
+				<a href="{{route('create_quiz')}}" class="btn btn-primary">Create</a>
+		  </div>
 		</div>
-		@endforeach
+		</div>
+
+		<div class='col-lg-6'>
+		<div class="card">
+		  <div class="card-body">
+				<h5 class="card-title text-center">Show your quizzes</h5>
+				<p class="card-text">View or Edit your quizes.</p>
+				<a href="{{route('my_quizzes')}}" class="btn btn-primary">Show</a>
+		  </div>
+		</div>
+		</div>
 
 	</div>
+
+
+	<div class='row'>
+
+		<div class='col-lg-6'>
+		<div class="card">
+		  <div class="card-body">
+				<h5 class="card-title text-center">Solve a Quiz</h5>
+				<p class="card-text">Search a quiz from the list.</p>
+				<a href="{{route('browse_quizzes')}}" class="btn btn-primary">Browse</a>
+		  </div>
+		</div>
+		</div>
+
+		<div class='col-lg-6'>
+		<div class="card">
+		  <div class="card-body">
+				<h5 class="card-title text-center">Show statistics</h5>
+				<p class="card-text">.</p>
+				<a href="{{route('my_quizzes')}}" class="btn btn-primary">Show</a>
+		  </div>
+		</div>
+		</div>
+
+	</div>
+
+
 </div>
 @endsection

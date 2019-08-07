@@ -59,9 +59,18 @@
 																			{{ __('Home Page') }}
 																		</a>
 
+																		<a class='dropdown-item' href="{{ route('my_quizzes') }}">
+																			{{ __('My Quizzes') }}
+																		</a>
+
+																		<a class='dropdown-item' href="{{ route('browse_quizzes') }}">
+																			{{ __('Browse Quizzes') }}
+																		</a>
+
 																		<a class='dropdown-item' href="{{ route('create_quiz') }}">
 																			{{ __('Create Quiz') }}
 																		</a>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
