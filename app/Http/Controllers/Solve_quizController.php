@@ -121,7 +121,7 @@ class Solve_quizController extends Controller
 				$answer = new Result();
 				$answer->user_email = $userEmail; 
 				$answer->target_quiz = $quiz->id; 
-				$answer->score = $correct_answer_counter; 
+				$answer->score = "$correct_answer_counter /".($total_questions - $to_be_answer_question); 
 				$answer->save();
 			}
 
@@ -170,6 +170,38 @@ class Solve_quizController extends Controller
 		}
 
 		return view('show_results_of_a_user', ['results'=> $results]);
+	}
+
+
+	/*
+	 * return the stats for a specific quiz. Only the owner of the quiz has access to this info
+	 */
+	public function quiz_result($id)
+	{
+		// check if user is  logedin
+		if(Auth::check() == FALSE)
+		{
+			return redirect('/')->with('error', 'You need to login to access this page');
+		}	
+
+		// check if user owns the quiz
+		$owner_email = Auth::user()->email;
+		try{
+
+			$results= DB::table('results')
+				->join('quizzes', 'quizzes.id', '=', 'results.target_quiz')
+				->select('quizzes.quizName', 'quizzes.description', 'results.created_at', 'results.score', 'results.user_email')
+				->where('quizzes.ownerEmail', $owner_email)
+				->where(DB::raw('md5(results.target_quiz)'), $id)
+				->orderBy('results.created_at', 'desc')->get();
+		}
+		catch(\Illuminate\Database\QueryException $ex){ 
+			return redirect('/home')->with('error', $ex->getMessage());
+		}
+
+		// return the statistics
+		return view('show_results_of_a_quiz', ['results'=> $results]);
+
 	}
 
 

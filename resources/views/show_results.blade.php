@@ -8,7 +8,12 @@
 		</div>
 
 		<div>
+			@if($total-$to_be_answer !=0)
 			<h5>Your score is: <span>{{ number_format($correct * 100/($total-$to_be_answer), 2)}}%</span></h5>
+			@else
+			<h5>Your score is: <span>0%</span></h5>
+			@endif
+	
 		</div>
 		
 		@if(Auth::check())

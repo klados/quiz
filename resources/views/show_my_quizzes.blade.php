@@ -34,12 +34,15 @@
 							<li class="list-group-item">
 								Created on: {{$row->created_at}}
 							</li>
+							<li class='list-group-item'>
+								<span class='mr-2'>Delete this quiz</span> <delete_confirm  quiz_id="{{$row->id}}"></delete_confirm>
+							</li>
 						</ul>
 					</div>
 
 					<div class="col flex text-center mt-4">
-						<a href="{{ url('/show_edit_quiz/'.$row->id) }}" class='flex-item card-link mr-3'>View</a>
-						<delete_confirm  quiz_id="{{$row->id}}"></delete_confirm>
+						<a href="{{ url('/show_edit_quiz/'.$row->id) }}" class='card-link'>View/Modify</a>
+						<a href="{{ url('/show_quiz_results/'.$row->id) }}" class='card-link'>View Statistics</a>
 					</div>
 
 				</div>
