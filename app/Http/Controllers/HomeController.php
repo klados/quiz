@@ -27,12 +27,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-
-			// $ownerEmail = Auth::user()->email;
-			// $quizzes = DB::table('quizzes')->select(
-			// 	DB::raw('md5(id) as id, quizName, quiz_duration, access, description, date(created_at) as created_at')
-			// )->where('ownerEmail', $ownerEmail)->get();
-
 			// return view('home', ['quizzes' => $quizzes]);
 			return view('home');
 		}

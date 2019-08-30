@@ -1,4 +1,5 @@
 
+
 <template>
 	<div>
 	</div>
@@ -15,6 +16,9 @@ export default{
 		{
 		}
 	},
+	// components:{
+  //   'editor':  Ed
+	// },
 	methods:
 	{
 

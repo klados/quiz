@@ -45,4 +45,4 @@ Route::get('/browse_quizzes', 'Solve_quizController@index')->name('browse_quizze
 Route::get('/solve_quiz/{id}', 'Solve_quizController@show')->name('solve_quiz');
 Route::post('/calculate_result', 'Solve_quizController@store')->name('calculate_result');
 
-// Route::get('/show_results', 'Solve_quizController@result')->name('show_results');
+Route::get('/show_results_of_a_user', 'Solve_quizController@result')->name('show_results_of_a_user');

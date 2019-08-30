@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">
 @section('content')
 
 	<div class='container'>

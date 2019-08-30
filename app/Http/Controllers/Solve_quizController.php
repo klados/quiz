@@ -143,12 +143,34 @@ class Solve_quizController extends Controller
 	}
 
 	/*
-	 * display the score that the user achived
+	 * list of all the quizzes a specific user have done
 	 */
-	// public function result($score, $quizName)
-	// {
-	// 	return view('show_results', ['score'=> $score, 'title'=> $quizName]);
-	// }
+	public function result()
+	{
+
+
+		if(Auth::check() == FALSE)
+		{
+			return redirect('/')->with('error', 'You need to login to access this page');
+		}	
+
+		$owner_email = Auth::user()->email;
+
+		try
+		{
+			$results= DB::table('results')
+				->join('quizzes', 'quizzes.id', '=', 'results.target_quiz')
+				->select('quizzes.quizName', 'quizzes.description', 'results.created_at', 'results.score')
+				->where('results.user_email', $owner_email)
+				->orderBy('results.created_at', 'desc')->get();
+
+		}
+		catch(\Illuminate\Database\QueryException $ex){ 
+			return redirect('/home')->with('error', $ex->getMessage());
+		}
+
+		return view('show_results_of_a_user', ['results'=> $results]);
+	}
 
 
 }

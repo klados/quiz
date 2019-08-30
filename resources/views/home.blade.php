@@ -48,8 +48,8 @@
 		<div class="card">
 		  <div class="card-body">
 				<h5 class="card-title text-center">Show statistics</h5>
-				<p class="card-text">.</p>
-				<a href="{{route('my_quizzes')}}" class="btn btn-primary">Show</a>
+				<p class="card-text">List of your reuslts.</p>
+				<a href="{{route('show_results_of_a_user')}}" class="btn btn-primary">Show</a>
 		  </div>
 		</div>
 		</div>
