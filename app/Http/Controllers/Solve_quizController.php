@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Result;
+use App\Quiz_answer;
 use Auth;
 
 use DB;
@@ -94,9 +95,11 @@ class Solve_quizController extends Controller
 			$total_questions = 0;
 			$to_be_answer_question = 0;
 
+			$toStoreData = array();
+
 			foreach($request->input('answers') as $key=> $ans)
 			{
-				$question = DB::table('questions')->select('type', 'correct_answer')
+				$question = DB::table('questions')->select('type', 'correct_answer', 'question')
 																	->where(DB::raw('md5(id)'), $key)->first();
 
 				if($question->type == 'Single Line' || $question->type == 'Radio buttons')
@@ -111,6 +114,12 @@ class Solve_quizController extends Controller
 					$to_be_answer_question++;
 				}
 				$total_questions++;
+
+				if(Auth::check())
+				{
+					array_push($toStoreData, [$question->question, $ans, $question->correct_answer]);
+				}
+
 			}
 
 			// store the results
@@ -123,6 +132,19 @@ class Solve_quizController extends Controller
 				$answer->target_quiz = $quiz->id; 
 				$answer->score = "$correct_answer_counter /".($total_questions - $to_be_answer_question); 
 				$answer->save();
+
+				// dd($toStoreData[1][0]);
+				for($i=0; $i <count($toStoreData); $i++)
+				{
+					$quiz_answer = new Quiz_answer();
+					$quiz_answer->quiz_id = $quiz->id;
+					$quiz_answer->result_id = $answer->id;
+					$quiz_answer->question = $toStoreData[$i][0];
+					$quiz_answer->answer = $toStoreData[$i][1];
+					$quiz_answer->correct_answer = isset($toStoreData[$i][2])? $toStoreData[$i][2]: '';
+					$quiz_answer->save();
+				}
+
 			}
 
 	
@@ -143,7 +165,7 @@ class Solve_quizController extends Controller
 	}
 
 	/*
-	 * list of all the quizzes a specific user have done
+	 * list of all the quizzes for a specific user
 	 */
 	public function result()
 	{
@@ -188,19 +210,24 @@ class Solve_quizController extends Controller
 		$owner_email = Auth::user()->email;
 		try{
 
-			$results= DB::table('results')
+			$results = DB::table('results')
 				->join('quizzes', 'quizzes.id', '=', 'results.target_quiz')
-				->select('quizzes.quizName', 'quizzes.description', 'results.created_at', 'results.score', 'results.user_email')
+				->select(DB::raw('md5(results.id) as id, quizzes.quizName, quizzes.description, results.created_at, results.score, results.user_email'))
 				->where('quizzes.ownerEmail', $owner_email)
 				->where(DB::raw('md5(results.target_quiz)'), $id)
 				->orderBy('results.created_at', 'desc')->get();
+
+			$answers = DB::table('quiz_answers')
+			 	->select(DB::raw('md5(result_id) as res_id, question, answer, correct_answer'))
+				->where(DB::raw('md5(quiz_id)'), $id)->get();	
 		}
 		catch(\Illuminate\Database\QueryException $ex){ 
 			return redirect('/home')->with('error', $ex->getMessage());
 		}
 
+		// dd($answers);
 		// return the statistics
-		return view('show_results_of_a_quiz', ['results'=> $results]);
+		return view('show_results_of_a_quiz', ['results'=> $results, 'answers'=> $answers]);
 
 	}
 
