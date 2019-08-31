@@ -23,6 +23,7 @@ Vue.component('question', require('./components/Question.vue').default);
 Vue.component('add_question', require('./components/Add_question.vue').default);
 Vue.component('radio', require('./components/Radio_button.vue').default);
 Vue.component('delete_confirm', require('./components/Delete_confirm.vue').default);
+Vue.component('search_quiz', require('./components/Search_quiz.vue').default);
 // Vue.component('editor', require('./components/Editor.vue').default);
 
 /**
